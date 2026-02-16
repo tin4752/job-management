@@ -59,12 +59,13 @@ export default function LoginPage({ onLoginSuccess }) {
       const { data: userData, error: userError } = await supabase
         .from('users')
         .select('*')
-        .eq('id', data.user.id)
-        .single();
+        .eq('id', data.user.id);
 
       if (userError) throw userError;
 
-      onLoginSuccess(data.session, userData);
+      const userProfile = userData && userData.length > 0 ? userData[0] : { id: data.user.id, email };
+
+      onLoginSuccess(data.session, userProfile);
     } catch (err) {
       setError(err.message);
       console.error('Login error:', err);
